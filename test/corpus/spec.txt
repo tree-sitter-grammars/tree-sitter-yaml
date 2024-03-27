@@ -1665,6 +1665,49 @@ Flow Mapping
               (string_scalar))))))))
 
 ================================================================================
+Flow Mapping Closed at Original Indentation
+================================================================================
+first: {
+  foo: you,
+  bar: far
+}
+second: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (block_node
+      (block_mapping
+        (block_mapping_pair
+          key: (flow_node
+            (plain_scalar
+              (string_scalar)))
+          value: (flow_node
+            (flow_mapping
+              (flow_pair
+                key: (flow_node
+                  (plain_scalar
+                    (string_scalar)))
+                value: (flow_node
+                  (plain_scalar
+                    (string_scalar))))
+              (flow_pair
+                key: (flow_node
+                  (plain_scalar
+                    (string_scalar)))
+                value: (flow_node
+                  (plain_scalar
+                    (string_scalar)))))))
+        (block_mapping_pair
+          key: (flow_node
+            (plain_scalar
+              (string_scalar)))
+          value: (flow_node
+            (plain_scalar
+              (integer_scalar))))))))
+
+================================================================================
 Flow mapping colon on line after key
 ================================================================================
 {"foo"
@@ -1760,6 +1803,45 @@ Flow Sequence
         (flow_node
           (plain_scalar
             (integer_scalar)))))))
+
+================================================================================
+Flow Sequence Closed at Original Indentation
+================================================================================
+first: [
+  foo,
+  b,
+  42
+]
+second: 2
+
+--------------------------------------------------------------------------------
+
+(stream
+  (document
+    (block_node
+      (block_mapping
+        (block_mapping_pair
+          key: (flow_node
+            (plain_scalar
+              (string_scalar)))
+          value: (flow_node
+            (flow_sequence
+              (flow_node
+                (plain_scalar
+                  (string_scalar)))
+              (flow_node
+                (plain_scalar
+                  (string_scalar)))
+              (flow_node
+                (plain_scalar
+                  (integer_scalar))))))
+        (block_mapping_pair
+          key: (flow_node
+            (plain_scalar
+              (string_scalar)))
+          value: (flow_node
+            (plain_scalar
+              (integer_scalar))))))))
 
 ================================================================================
 Flow Sequence in Block Mapping

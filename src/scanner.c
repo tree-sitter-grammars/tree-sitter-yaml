@@ -22,9 +22,9 @@ typedef enum  {
   R_BLK_FLD_BGN,  BR_BLK_FLD_BGN,
                   BR_BLK_STR_CTN,
   R_FLW_SEQ_BGN,  BR_FLW_SEQ_BGN, B_FLW_SEQ_BGN,
-  R_FLW_SEQ_END,  BR_FLW_SEQ_END,
+  R_FLW_SEQ_END,  BR_FLW_SEQ_END, B_FLW_SEQ_END,
   R_FLW_MAP_BGN,  BR_FLW_MAP_BGN, B_FLW_MAP_BGN,
-  R_FLW_MAP_END,  BR_FLW_MAP_END,
+  R_FLW_MAP_END,  BR_FLW_MAP_END, B_FLW_MAP_END,
   R_FLW_SEP_BGN,  BR_FLW_SEP_BGN,
   R_FLW_KEY_BGN,  BR_FLW_KEY_BGN,
   R_FLW_JSV_BGN,  BR_FLW_JSV_BGN,
@@ -977,6 +977,11 @@ bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
             mrk_end(scanner, lexer);
             RET_SYM(BR_FLW_SEQ_END)
         }
+        if (valid_symbols[B_FLW_SEQ_END] && is_b) {
+            adv(scanner, lexer);
+            mrk_end(scanner, lexer);
+            RET_SYM(BR_FLW_SEQ_END)
+        }
     } else if (lexer->lookahead == '{') {
         if (valid_symbols[R_FLW_MAP_BGN] && is_r) {
             MAY_UPD_IMP_COL();
@@ -1003,6 +1008,11 @@ bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
             RET_SYM(R_FLW_MAP_END)
         }
         if (valid_symbols[BR_FLW_MAP_END] && is_br) {
+            adv(scanner, lexer);
+            mrk_end(scanner, lexer);
+            RET_SYM(BR_FLW_MAP_END)
+        }
+        if (valid_symbols[B_FLW_MAP_END] && is_b) {
             adv(scanner, lexer);
             mrk_end(scanner, lexer);
             RET_SYM(BR_FLW_MAP_END)

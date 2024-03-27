@@ -22,9 +22,9 @@ module.exports = grammar({
     $._r_blk_fld_bgn,  $._br_blk_fld_bgn,                   // >
                        $._br_blk_str_ctn,                   // block scalar content
     $._r_flw_seq_bgn,  $._br_flw_seq_bgn, $._b_flw_seq_bgn, // [
-    $._r_flw_seq_end,  $._br_flw_seq_end,                   // ]
+    $._r_flw_seq_end,  $._br_flw_seq_end, $._b_flw_seq_end, // ]
     $._r_flw_map_bgn,  $._br_flw_map_bgn, $._b_flw_map_bgn, // {
-    $._r_flw_map_end,  $._br_flw_map_end,                   // }
+    $._r_flw_map_end,  $._br_flw_map_end, $._b_flw_map_end, // }
     $._r_flw_sep_bgn,  $._br_flw_sep_bgn,                   // ,
     $._r_flw_key_bgn,  $._br_flw_key_bgn,                   // ?
     $._r_flw_jsv_bgn,  $._br_flw_jsv_bgn,                   // : (json key)
@@ -298,7 +298,7 @@ module.exports = grammar({
     _br_sgl_flw_seq: $ => seq($._br_flw_seq_bgn, $._sgl_flw_seq_tal),
     _b_sgl_flw_seq: $ => seq($._b_flw_seq_bgn, $._sgl_flw_seq_tal),
 
-    _flw_seq_tal: $ => seq(optional(choice($._r_flw_seq_dat, $._br_flw_seq_dat)), choice($._r_flw_seq_end, $._br_flw_seq_end)),
+    _flw_seq_tal: $ => seq(optional(choice($._r_flw_seq_dat, $._br_flw_seq_dat)), choice($._r_flw_seq_end, $._br_flw_seq_end, $._b_flw_seq_end)),
     _sgl_flw_seq_tal: $ => seq(optional($._r_sgl_flw_col_dat), $._r_flw_seq_end),
 
     // flow mapping
@@ -317,7 +317,7 @@ module.exports = grammar({
     _br_sgl_flw_map: $ => seq($._br_flw_map_bgn, $._sgl_flw_map_tal),
     _b_sgl_flw_map: $ => seq($._b_flw_map_bgn, $._sgl_flw_map_tal),
 
-    _flw_map_tal: $ => seq(optional(choice($._r_flw_map_dat, $._br_flw_map_dat)), choice($._r_flw_map_end, $._br_flw_map_end)),
+    _flw_map_tal: $ => seq(optional(choice($._r_flw_map_dat, $._br_flw_map_dat)), choice($._r_flw_map_end, $._br_flw_map_end, $._b_flw_map_end)),
     _sgl_flw_map_tal: $ => seq(optional($._r_sgl_flw_col_dat), $._r_flw_map_end),
 
     // flow collection data
@@ -529,9 +529,9 @@ module.exports.grammar = global_alias(global_alias(module.exports.grammar, {
   ..._("|", "_r_blk_lit_bgn", "_br_blk_lit_bgn"),
   ..._(">", "_r_blk_fld_bgn", "_br_blk_fld_bgn"),
   ..._("[", "_r_flw_seq_bgn", "_br_flw_seq_bgn", "_b_flw_seq_bgn"),
-  ..._("]", "_r_flw_seq_end", "_br_flw_seq_end"),
+  ..._("]", "_r_flw_seq_end", "_br_flw_seq_end", "_b_flw_seq_end"),
   ..._("{", "_r_flw_map_bgn", "_br_flw_map_bgn", "_b_flw_map_bgn"),
-  ..._("}", "_r_flw_map_end", "_br_flw_map_end"),
+  ..._("}", "_r_flw_map_end", "_br_flw_map_end", "_b_flw_map_end"),
   ..._(",", "_r_flw_sep_bgn", "_br_flw_sep_bgn"),
   ..._("?", "_r_flw_key_bgn", "_br_flw_key_bgn"),
   ..._(":", "_r_flw_jsv_bgn", "_br_flw_jsv_bgn"),
