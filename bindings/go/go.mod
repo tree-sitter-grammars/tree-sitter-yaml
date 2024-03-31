@@ -1,4 +1,4 @@
-module github.com/tree-sitter/tree-sitter-yaml
+module github.com/tree-sitter-grammars/tree-sitter-yaml
 
 go 1.22
 

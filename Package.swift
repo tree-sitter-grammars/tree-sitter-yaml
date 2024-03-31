@@ -2,14 +2,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "TreeSitterYaml",
-    platforms: [.macOS(.v10_13), .iOS(.v11)],
+    name: "TreeSitterYAML",
     products: [
-        .library(name: "TreeSitterYaml", targets: ["TreeSitterYaml"]),
+        .library(name: "TreeSitterYAML", targets: ["TreeSitterYAML"]),
     ],
     dependencies: [],
     targets: [
-        .target(name: "TreeSitterYaml",
+        .target(name: "TreeSitterYAML",
                 path: ".",
                 exclude: [
                     "Cargo.toml",
@@ -36,7 +35,7 @@ let package = Package(
                 ],
                 sources: [
                     "src/parser.c",
-                    // NOTE: if your language has an external scanner, add it here.
+                    "src/scanner.c",
                 ],
                 resources: [
                     .copy("queries")

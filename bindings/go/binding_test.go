@@ -10,6 +10,6 @@ import (
 func TestCanLoadGrammar(t *testing.T) {
 	language := tree_sitter.NewLanguage(tree_sitter_yaml.Language())
 	if language == nil {
-		t.Errorf("Error loading Yaml grammar")
+		t.Errorf("Error loading YAML grammar")
 	}
 }

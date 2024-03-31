@@ -1,4 +1,4 @@
-VERSION := 0.0.1
+VERSION := 0.6.0
 
 LANGUAGE_NAME := tree-sitter-yaml
 
@@ -106,5 +106,6 @@ clean:
 
 test:
 	$(TS) test
+	$(TS) parse examples/* --quiet --time
 
 .PHONY: all install uninstall clean test

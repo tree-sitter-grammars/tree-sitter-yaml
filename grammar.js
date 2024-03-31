@@ -1,3 +1,11 @@
+/**
+ * @file YAML grammar for tree-sitter
+ * @author Ika <ikatyang@gmail.com>
+ * @license MIT
+ */
+
+/// <reference types="tree-sitter-cli/dsl" />
+
 module.exports = grammar({
   name: "yaml",
 

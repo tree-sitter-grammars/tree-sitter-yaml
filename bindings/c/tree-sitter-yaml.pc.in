@@ -3,7 +3,7 @@ libdir=@LIBDIR@
 includedir=@INCLUDEDIR@
 
 Name: tree-sitter-yaml
-Description: Yaml grammar for tree-sitter
+Description: YAML grammar for tree-sitter
 URL: @URL@
 Version: @VERSION@
 Requires: @REQUIRES@

@@ -1,7 +1,11 @@
 * text eol=lf
-*.wasm binary
 
-/src/** linguist-generated
-/src/scanner.cc linguist-generated=false
-/index.js linguist-generated
-/binding.gyp linguist-detectable=false
+src/*.json linguist-generated
+src/parser.c linguist-generated
+src/tree_sitter/* linguist-generated
+
+bindings/** linguist-generated
+binding.gyp linguist-generated
+setup.py linguist-generated
+Makefile linguist-generated
+Package.swift linguist-generated

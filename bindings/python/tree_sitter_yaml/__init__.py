@@ -1,4 +1,4 @@
-"Yaml grammar for tree-sitter"
+"YAML grammar for tree-sitter"
 
 from ._binding import language
 
