@@ -4,8 +4,8 @@ src/*.json linguist-generated
 src/parser.c linguist-generated
 src/tree_sitter/* linguist-generated
 
-src/schema.generated.c linguist-generated
-schema/src/** linguist-generated
+src/schema.*.c linguist-generated
+schema/*/src/** linguist-generated
 
 bindings/** linguist-generated
 binding.gyp linguist-generated

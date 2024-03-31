@@ -2,6 +2,6 @@
   "private": true,
   "scripts": {
     "build": "tree-sitter generate --no-bindings",
-    "postbuild": "node ../update-schema.js core"
+    "postbuild": "node ../update-schema.js json"
   }
 }

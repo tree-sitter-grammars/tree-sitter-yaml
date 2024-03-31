@@ -1,6 +1,4 @@
-/**
- * @see {@link Core Schema|https://yaml.org/spec/1.2/spec.html#schema/core}
- */
+/** @see {@link Core Schema|https://yaml.org/spec/1.2.2/#103-core-schema} */
 
 /// <reference types="tree-sitter-cli/dsl" />
 

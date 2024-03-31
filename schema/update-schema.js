@@ -6,7 +6,9 @@ const { writeFileSync } = require("fs");
 const { readFile } = require("fs/promises");
 const { join } = require("path");
 
-readFile(join(__dirname, process.argv[2] ?? "core", "src", "parser.c"), "utf8").then(input => {
+const schema = process.argv[2] ?? "core";
+
+readFile(join(__dirname, schema, "src", "parser.c"), "utf8").then(input => {
   const cases = extractCases(input);
   const enums = ["RS_STR"];
   const content = "switch (sch_stt) " + block([
@@ -37,7 +39,7 @@ readFile(join(__dirname, process.argv[2] ?? "core", "src", "parser.c"), "utf8").
       .replace(/lookahead/g, "cur_chr"),
   ]);
   writeFileSync(
-    join(__dirname, "..", "src", "schema.generated.c"),
+    join(__dirname, "..", "src", `schema.${schema}.c`),
     [
       "#include <stdlib.h>",
       "#define SCH_STT_FRZ -1",

@@ -1,7 +1,14 @@
 #include "tree_sitter/array.h"
 #include "tree_sitter/parser.h"
 
-#include "./schema.generated.c"
+#define _str(x) #x
+#define _file(x) _str(./schema.x.c)
+
+#ifndef YAML_SCHEMA
+#define YAML_SCHEMA core
+#endif
+
+#include _file(YAML_SCHEMA)
 
 // clang-format off
 

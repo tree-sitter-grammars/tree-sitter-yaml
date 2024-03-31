@@ -50,7 +50,7 @@
   },
   "scripts": {
     "build": "tree-sitter generate --no-bindings",
-    "postbuild": "node schema/update-schema.js",
+    "postbuild": "npm run --prefix schema/core build",
     "test": "tree-sitter test",
     "install": "node-gyp-build",
     "prebuildify": "prebuildify --napi --strip"
@@ -68,7 +68,7 @@
       "injection-regex": "^ya?ml$",
       "highlights": "queries/highlights.scm",
       "external-files": [
-        "src/schema.generated.c"
+        "src/schema.core.c"
       ]
     }
   ]

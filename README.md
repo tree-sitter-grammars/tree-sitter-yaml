@@ -11,7 +11,7 @@ A tree-sitter parser for YAML files.
 
 ## References
 
-- [YAML version 1.2](https://yaml.org/spec/1.2/spec.html)
+- [YAML version 1.2](https://yaml.org/spec/1.2.2/)
 
 [ci]: https://img.shields.io/github/actions/workflow/status/tree-sitter-grammars/tree-sitter-yaml/ci.yml?logo=github&label=CI
 [discord]: https://img.shields.io/discord/1063097320771698699?logo=discord&label=discord
