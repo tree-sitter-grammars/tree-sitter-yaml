@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - grammar.js
+      - src/**
+      - test/**
+      - bindings/**
+      - binding.gyp
+  pull_request:
+    paths:
+      - grammar.js
+      - src/**
+      - test/**
+      - bindings/**
+      - binding.gyp
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test parsers
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-14]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@v1
+      - name: Run tests
+        uses: tree-sitter/parser-test-action@v2
+        with:
+          test-rust: ${{runner.os == 'Linux'}}
+      - name: Set up test suite
+        shell: bash
+        run: |-
+          printf '%s\n' examples/*.yaml > "$RUNNER_TEMP/test-files"
+          while read -r file; do
+            printf '%s\n' "$file" >> "$RUNNER_TEMP/test-files"
+            if [[ -f ${file/in.yaml/error} ]]; then
+              printf '%s\n' "$file" >> "$RUNNER_TEMP/invalid-files"
+            fi
+          done < <(find -L examples/yaml-test-suite/name -name in.yaml)
+      - name: Parse test suite
+        uses: tree-sitter/parse-action@v4
+        with:
+          files-list: ${{runner.temp}}/test-files
+          invalid-files-list: ${{runner.temp}}/invalid-files
