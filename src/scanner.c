@@ -124,10 +124,6 @@ typedef enum  {
      : scanner->rlt_sch == RS_FLT ? POS##_SGL_PLN_FLT_##CTX                                                            \
                                   : POS##_SGL_PLN_STR_##CTX)
 
-static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
-
-static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
-
 typedef struct {
     int16_t row;
     int16_t col;
@@ -147,7 +143,7 @@ typedef struct {
     ResultSchema rlt_sch;
 } Scanner;
 
-unsigned serialize(Scanner *scanner, char *buffer) {
+static unsigned serialize(Scanner *scanner, char *buffer) {
     size_t i = 0;
     buffer[i++] = (char)scanner->row;
     buffer[i++] = (char)scanner->col;
@@ -164,7 +160,7 @@ unsigned serialize(Scanner *scanner, char *buffer) {
     return i;
 }
 
-void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
+static void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
     scanner->row = 0;
     scanner->col = 0;
     scanner->blk_imp_row = -1;
@@ -188,39 +184,39 @@ void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
     }
 }
 
-void adv(Scanner *scanner, TSLexer *lexer) {
+static inline void adv(Scanner *scanner, TSLexer *lexer) {
     scanner->cur_col++;
     scanner->cur_chr = lexer->lookahead;
-    advance(lexer);
+    lexer->advance(lexer, false);
 }
 
-void adv_nwl(Scanner *scanner, TSLexer *lexer) {
+static inline void adv_nwl(Scanner *scanner, TSLexer *lexer) {
     scanner->cur_row++;
     scanner->cur_col = 0;
     scanner->cur_chr = lexer->lookahead;
-    advance(lexer);
+    lexer->advance(lexer, false);
 }
 
-void skp(Scanner *scanner, TSLexer *lexer) {
+static inline void skp(Scanner *scanner, TSLexer *lexer) {
     scanner->cur_col++;
     scanner->cur_chr = lexer->lookahead;
-    skip(lexer);
+    lexer->advance(lexer, true);
 }
 
-void skp_nwl(Scanner *scanner, TSLexer *lexer) {
+static inline void skp_nwl(Scanner *scanner, TSLexer *lexer) {
     scanner->cur_row++;
     scanner->cur_col = 0;
     scanner->cur_chr = lexer->lookahead;
-    skip(lexer);
+    lexer->advance(lexer, true);
 }
 
-void mrk_end(Scanner *scanner, TSLexer *lexer) {
+static inline void mrk_end(Scanner *scanner, TSLexer *lexer) {
     scanner->end_row = scanner->cur_row;
     scanner->end_col = scanner->cur_col;
     lexer->mark_end(lexer);
 }
 
-void init(Scanner *scanner) {
+static inline void init(Scanner *scanner) {
     scanner->cur_row = scanner->row;
     scanner->cur_col = scanner->col;
     scanner->cur_chr = 0;
@@ -228,73 +224,73 @@ void init(Scanner *scanner) {
     scanner->rlt_sch = RS_STR;
 }
 
-void flush(Scanner *scanner) {
+static inline void flush(Scanner *scanner) {
     scanner->row = scanner->end_row;
     scanner->col = scanner->end_col;
 }
 
-void pop_ind(Scanner *scanner) {
+static inline void pop_ind(Scanner *scanner) {
     array_pop(&scanner->ind_len_stk);
     array_pop(&scanner->ind_typ_stk);
 }
 
-void push_ind(Scanner *scanner, int16_t typ, int16_t len) {
+static inline void push_ind(Scanner *scanner, int16_t typ, int16_t len) {
     array_push(&scanner->ind_len_stk, len);
     array_push(&scanner->ind_typ_stk, typ);
 }
 
-bool is_wsp(int32_t c) { return c == ' ' || c == '\t'; }
+static inline bool is_wsp(int32_t c) { return c == ' ' || c == '\t'; }
 
-bool is_nwl(int32_t c) { return c == '\r' || c == '\n'; }
+static inline bool is_nwl(int32_t c) { return c == '\r' || c == '\n'; }
 
-bool is_wht(int32_t c) { return is_wsp(c) || is_nwl(c) || c == 0; }
+static inline bool is_wht(int32_t c) { return is_wsp(c) || is_nwl(c) || c == 0; }
 
-bool is_ns_dec_digit(int32_t c) { return c >= '0' && c <= '9'; }
+static inline bool is_ns_dec_digit(int32_t c) { return c >= '0' && c <= '9'; }
 
-bool is_ns_hex_digit(int32_t c) { return is_ns_dec_digit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'); }
+static inline bool is_ns_hex_digit(int32_t c) { return is_ns_dec_digit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'); }
 
-bool is_ns_word_char(int32_t c) {
+static inline bool is_ns_word_char(int32_t c) {
     return c == '-' || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-bool is_nb_json(int32_t c) { return c == 0x09 || (c >= 0x20 && c <= 0x10ffff); }
+static inline bool is_nb_json(int32_t c) { return c == 0x09 || (c >= 0x20 && c <= 0x10ffff); }
 
-bool is_nb_double_char(int32_t c) { return is_nb_json(c) && c != '\\' && c != '"'; }
+static inline bool is_nb_double_char(int32_t c) { return is_nb_json(c) && c != '\\' && c != '"'; }
 
-bool is_nb_single_char(int32_t c) { return is_nb_json(c) && c != '\''; }
+static inline bool is_nb_single_char(int32_t c) { return is_nb_json(c) && c != '\''; }
 
-bool is_ns_char(int32_t c) {
+static inline bool is_ns_char(int32_t c) {
     return (c >= 0x21 && c <= 0x7e) || c == 0x85 || (c >= 0xa0 && c <= 0xd7ff) || (c >= 0xe000 && c <= 0xfefe) ||
            (c >= 0xff00 && c <= 0xfffd) || (c >= 0x10000 && c <= 0x10ffff);
 }
 
-bool is_c_indicator(int32_t c) {
+static inline bool is_c_indicator(int32_t c) {
     return c == '-' || c == '?' || c == ':' || c == ',' || c == '[' || c == ']' || c == '{' || c == '}' || c == '#' ||
            c == '&' || c == '*' || c == '!' || c == '|' || c == '>' || c == '\'' || c == '"' || c == '%' || c == '@' ||
            c == '`';
 }
 
-bool is_c_flow_indicator(int32_t c) { return c == ',' || c == '[' || c == ']' || c == '{' || c == '}'; }
+static inline bool is_c_flow_indicator(int32_t c) { return c == ',' || c == '[' || c == ']' || c == '{' || c == '}'; }
 
-bool is_plain_safe_in_block(int32_t c) { return is_ns_char(c); }
+static inline bool is_plain_safe_in_block(int32_t c) { return is_ns_char(c); }
 
-bool is_plain_safe_in_flow(int32_t c) { return is_ns_char(c) && !is_c_flow_indicator(c); }
+static inline bool is_plain_safe_in_flow(int32_t c) { return is_ns_char(c) && !is_c_flow_indicator(c); }
 
-bool is_ns_uri_char(int32_t c) {
+static inline bool is_ns_uri_char(int32_t c) {
     return is_ns_word_char(c) || c == '#' || c == ';' || c == '/' || c == '?' || c == ':' || c == '@' || c == '&' ||
            c == '=' || c == '+' || c == '$' || c == ',' || c == '_' || c == '.' || c == '!' || c == '~' || c == '*' ||
            c == '\'' || c == '(' || c == ')' || c == '[' || c == ']';
 }
 
-bool is_ns_tag_char(int32_t c) {
+static inline bool is_ns_tag_char(int32_t c) {
     return is_ns_word_char(c) || c == '#' || c == ';' || c == '/' || c == '?' || c == ':' || c == '@' || c == '&' ||
            c == '=' || c == '+' || c == '$' || c == '_' || c == '.' || c == '~' || c == '*' || c == '\'' || c == '(' ||
            c == ')';
 }
 
-bool is_ns_anchor_char(int32_t c) { return is_ns_char(c) && !is_c_flow_indicator(c); }
+static inline bool is_ns_anchor_char(int32_t c) { return is_ns_char(c) && !is_c_flow_indicator(c); }
 
-char scn_uri_esc(Scanner *scanner, TSLexer *lexer) {
+static char scn_uri_esc(Scanner *scanner, TSLexer *lexer) {
     if (lexer->lookahead != '%') {
         return SCN_STOP;
     }
@@ -311,7 +307,7 @@ char scn_uri_esc(Scanner *scanner, TSLexer *lexer) {
     return SCN_SUCC;
 }
 
-char scn_ns_uri_char(Scanner *scanner, TSLexer *lexer) {
+static char scn_ns_uri_char(Scanner *scanner, TSLexer *lexer) {
     if (is_ns_uri_char(lexer->lookahead)) {
         adv(scanner, lexer);
         return SCN_SUCC;
@@ -319,7 +315,7 @@ char scn_ns_uri_char(Scanner *scanner, TSLexer *lexer) {
     return scn_uri_esc(scanner, lexer);
 }
 
-char scn_ns_tag_char(Scanner *scanner, TSLexer *lexer) {
+static char scn_ns_tag_char(Scanner *scanner, TSLexer *lexer) {
     if (is_ns_tag_char(lexer->lookahead)) {
         adv(scanner, lexer);
         return SCN_SUCC;
@@ -327,7 +323,7 @@ char scn_ns_tag_char(Scanner *scanner, TSLexer *lexer) {
     return scn_uri_esc(scanner, lexer);
 }
 
-bool scn_dir_bgn(Scanner *scanner, TSLexer *lexer) {
+static bool scn_dir_bgn(Scanner *scanner, TSLexer *lexer) {
     adv(scanner, lexer);
     if (lexer->lookahead == 'Y') {
         adv(scanner, lexer);
@@ -370,7 +366,7 @@ bool scn_dir_bgn(Scanner *scanner, TSLexer *lexer) {
     return false;
 }
 
-bool scn_dir_yml_ver(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_dir_yml_ver(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     uint16_t n1 = 0;
     uint16_t n2 = 0;
     while (is_ns_dec_digit(lexer->lookahead)) {
@@ -392,7 +388,7 @@ bool scn_dir_yml_ver(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_tag_hdl_tal(Scanner *scanner, TSLexer *lexer) {
+static bool scn_tag_hdl_tal(Scanner *scanner, TSLexer *lexer) {
     if (lexer->lookahead == '!') {
         adv(scanner, lexer);
         return true;
@@ -412,7 +408,7 @@ bool scn_tag_hdl_tal(Scanner *scanner, TSLexer *lexer) {
     return false;
 }
 
-bool scn_dir_tag_hdl(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_dir_tag_hdl(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (lexer->lookahead == '!') {
         adv(scanner, lexer);
         if (scn_tag_hdl_tal(scanner, lexer)) {
@@ -423,7 +419,7 @@ bool scn_dir_tag_hdl(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     return false;
 }
 
-bool scn_dir_tag_pfx(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_dir_tag_pfx(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (lexer->lookahead == '!') {
         adv(scanner, lexer);
     } else if (scn_ns_tag_char(scanner, lexer) == SCN_SUCC) {
@@ -443,7 +439,7 @@ bool scn_dir_tag_pfx(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     }
 }
 
-bool scn_dir_rsv_prm(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_dir_rsv_prm(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (!is_ns_char(lexer->lookahead)) {
         return false;
     }
@@ -455,7 +451,7 @@ bool scn_dir_rsv_prm(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_tag(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_tag(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (lexer->lookahead != '!') {
         return false;
     }
@@ -501,7 +497,7 @@ bool scn_tag(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     return false;
 }
 
-bool scn_acr_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_acr_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (lexer->lookahead != '&') {
         return false;
     }
@@ -513,7 +509,7 @@ bool scn_acr_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_acr_ctn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_acr_ctn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     while (is_ns_anchor_char(lexer->lookahead)) {
         adv(scanner, lexer);
     }
@@ -521,7 +517,7 @@ bool scn_acr_ctn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_als_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_als_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (lexer->lookahead != '*') {
         return false;
     }
@@ -533,7 +529,7 @@ bool scn_als_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_als_ctn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_als_ctn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     while (is_ns_anchor_char(lexer->lookahead)) {
         adv(scanner, lexer);
     }
@@ -541,7 +537,7 @@ bool scn_als_ctn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_dqt_esc_seq(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_dqt_esc_seq(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     uint16_t i;
     switch (lexer->lookahead) {
         case '0':
@@ -600,7 +596,7 @@ bool scn_dqt_esc_seq(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_drs_doc_end(Scanner *scanner, TSLexer *lexer) {
+static bool scn_drs_doc_end(Scanner *scanner, TSLexer *lexer) {
     if (lexer->lookahead != '-' && lexer->lookahead != '.') {
         return false;
     }
@@ -619,7 +615,7 @@ bool scn_drs_doc_end(Scanner *scanner, TSLexer *lexer) {
     return false;
 }
 
-bool scn_dqt_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_dqt_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (!is_nb_double_char(lexer->lookahead)) {
         return false;
     }
@@ -636,7 +632,7 @@ bool scn_dqt_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_sqt_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_sqt_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (!is_nb_single_char(lexer->lookahead)) {
         return false;
     }
@@ -653,7 +649,7 @@ bool scn_sqt_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_blk_str_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_blk_str_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (lexer->lookahead != '|' && lexer->lookahead != '>') {
         return false;
     }
@@ -714,7 +710,7 @@ bool scn_blk_str_bgn(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-bool scn_blk_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
+static bool scn_blk_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     if (!is_ns_char(lexer->lookahead)) {
         return false;
     }
@@ -745,7 +741,7 @@ bool scn_blk_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_symbol) {
     RET_SYM(result_symbol);
 }
 
-char scn_pln_cnt(Scanner *scanner, TSLexer *lexer, bool (*is_plain_safe)(int32_t)) {
+static char scn_pln_cnt(Scanner *scanner, TSLexer *lexer, bool (*is_plain_safe)(int32_t)) {
     bool is_cur_wsp = is_wsp(scanner->cur_chr);
     bool is_cur_saf = is_plain_safe(scanner->cur_chr);
     bool is_lka_wsp = is_wsp(lexer->lookahead);
@@ -789,7 +785,7 @@ char scn_pln_cnt(Scanner *scanner, TSLexer *lexer, bool (*is_plain_safe)(int32_t
     return SCN_SUCC;
 }
 
-bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     init(scanner);
     mrk_end(scanner, lexer);
 
@@ -798,7 +794,6 @@ bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     int16_t *ind_ptr = scanner->ind_len_stk.contents + scanner->ind_len_stk.size - 1;
     int16_t *ind_end = scanner->ind_len_stk.contents;
     int16_t cur_ind = *ind_ptr--;
-    int16_t x = *ind_ptr;
     int16_t prt_ind = ind_ptr == ind_end ? -1 : *ind_ptr;
     int16_t cur_ind_typ = *array_back(&scanner->ind_typ_stk);
 
@@ -1355,14 +1350,14 @@ bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
 }
 
 void *tree_sitter_yaml_external_scanner_create() {
-    Scanner *scanner = calloc(1, sizeof(Scanner));
+    Scanner *scanner = ts_calloc(1, sizeof(Scanner));
     deserialize(scanner, NULL, 0);
     return scanner;
 }
 
 void tree_sitter_yaml_external_scanner_destroy(void *payload) {
     Scanner *scanner = (Scanner *)payload;
-    free(scanner);
+    ts_free(scanner);
 }
 
 unsigned tree_sitter_yaml_external_scanner_serialize(void *payload, char *buffer) {
