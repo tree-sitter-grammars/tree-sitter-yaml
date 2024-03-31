@@ -66,6 +66,7 @@
         "yaml"
       ],
       "injection-regex": "^ya?ml$",
+      "highlights": "queries/highlights.scm",
       "external-files": [
         "src/schema.generated.c"
       ]
