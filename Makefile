@@ -27,11 +27,13 @@ INCLUDEDIR ?= $(PREFIX)/include
 LIBDIR ?= $(PREFIX)/lib
 PCLIBDIR ?= $(LIBDIR)/pkgconfig
 
-# object files
-OBJS := $(patsubst %.c,%.o,$(wildcard $(SRC_DIR)/*.c))
+# source/object files
+PARSER := src/parser.c
+SCANNER := src/scanner.c
+OBJS := $(patsubst %.c,%.o,$(PARSER) $(SCANNER))
 
 # flags
-ARFLAGS := rcs
+ARFLAGS ?= rcs
 override CFLAGS += -I$(SRC_DIR) -std=c11 -fPIC
 
 # OS-specific bits
@@ -81,8 +83,8 @@ $(LANGUAGE_NAME).pc: bindings/c/$(LANGUAGE_NAME).pc.in
 		-e 's|=$(PREFIX)|=$${prefix}|' \
 		-e 's|@PREFIX@|$(PREFIX)|' $< > $@
 
-$(SRC_DIR)/parser.c: grammar.js
-	$(TS) generate --no-bindings
+$(PARSER): $(SRC_DIR)/grammar.json
+	$(TS) generate --no-bindings $^
 
 install: all
 	install -d '$(DESTDIR)$(INCLUDEDIR)'/tree_sitter '$(DESTDIR)$(PCLIBDIR)' '$(DESTDIR)$(LIBDIR)'

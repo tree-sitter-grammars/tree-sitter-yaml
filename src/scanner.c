@@ -2,11 +2,10 @@
 #include "tree_sitter/parser.h"
 
 #include "./schema.generated.c"
-#include <stdbool.h>
 
 // clang-format off
 
-typedef enum  {
+typedef enum {
   END_OF_FILE,
 
   S_DIR_YML_BGN,  R_DIR_YML_VER,
@@ -118,10 +117,10 @@ typedef enum  {
     }
 
 #define SGL_PLN_SYM(POS, CTX)                                                                                          \
-    (scanner->rlt_sch == RS_NUL   ? POS##_SGL_PLN_NUL_##CTX                                                            \
-     : scanner->rlt_sch == RS_BOL ? POS##_SGL_PLN_BOL_##CTX                                                            \
+    (scanner->rlt_sch == RS_NULL   ? POS##_SGL_PLN_NUL_##CTX                                                            \
+     : scanner->rlt_sch == RS_BOOL ? POS##_SGL_PLN_BOL_##CTX                                                            \
      : scanner->rlt_sch == RS_INT ? POS##_SGL_PLN_INT_##CTX                                                            \
-     : scanner->rlt_sch == RS_FLT ? POS##_SGL_PLN_FLT_##CTX                                                            \
+     : scanner->rlt_sch == RS_FLOAT ? POS##_SGL_PLN_FLT_##CTX                                                            \
                                   : POS##_SGL_PLN_STR_##CTX)
 
 typedef struct {
@@ -549,6 +548,7 @@ static bool scn_dqt_esc_seq(Scanner *scanner, TSLexer *lexer, TSSymbol result_sy
         case 'v':
         case 'r':
         case 'e':
+        case 'f':
         case ' ':
         case '"':
         case '/':

@@ -2,14 +2,15 @@
 
 // @ts-nocheck
 
-const fs = require("fs");
-const path = require("path");
+const { writeFileSync } = require("fs");
+const { readFile } = require("fs/promises");
+const { join } = require("path");
 
-fs.promises.readFile("./schema/src/parser.c", "utf8").then(input => {
+readFile(join(__dirname, process.argv[2] ?? "core", "src", "parser.c"), "utf8").then(input => {
   const cases = extractCases(input);
-  const enums = [];
+  const enums = ["RS_STR"];
   const content = "switch (sch_stt) " + block([
-    "case SCH_STT_FRZ:\n      break;",
+    "case SCH_STT_FRZ:\n  break;",
     cases
       .map(([key, { content }]) => `${(key === "default" ? "default:" : `case ${key}:`)}\n${indent(content)}`)
       .join("\n  END_STATE();\n")
@@ -35,18 +36,18 @@ fs.promises.readFile("./schema/src/parser.c", "utf8").then(input => {
       .replace("return false;", '*rlt_sch = RS_STR;\n  return SCH_STT_FRZ;')
       .replace(/lookahead/g, "cur_chr"),
   ]);
-  fs.writeFileSync(
-    path.resolve(__dirname, "../src/schema.generated.c"),
+  writeFileSync(
+    join(__dirname, "..", "src", "schema.generated.c"),
     [
       "#include <stdlib.h>",
       "#define SCH_STT_FRZ -1",
       `typedef enum ${block(enums.map((k) => `${k},`))} ResultSchema;`,
-      `int8_t adv_sch_stt(int8_t sch_stt, int32_t cur_chr, ResultSchema *rlt_sch) ${block([
+      `static int8_t adv_sch_stt(int8_t sch_stt, int32_t cur_chr, ResultSchema *rlt_sch) ${block([
         content,
         `if (cur_chr != '\\r' && cur_chr != '\\n' && cur_chr != ' ' && cur_chr != 0) *rlt_sch = RS_STR;`,
         "return SCH_STT_FRZ;",
       ])}`,
-    ].join("\n\n"),
+    ].join("\n\n") + "\n",
   );
 });
 
@@ -68,16 +69,7 @@ function extractCases(input) {
 }
 
 function convertName(name) {
-  return {
-    anon_sym_: "NULL",
-    sym__base_10: "INT",
-    sym__base_8: "INT",
-    sym__base_16: "INT",
-    sym__number: "FLOAT",
-    sym__infinity: "FLOAT",
-    sym__not_a_number: "FLOAT",
-    aux_sym_str_token1: "STR",
-  }[name] || name.replace("sym_", "").toUpperCase();
+  return name.replace("sym_", "").toUpperCase();
 }
 
 function block(contents) {

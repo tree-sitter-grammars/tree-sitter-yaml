@@ -29,7 +29,8 @@
     "prebuilds/**",
     "bindings/node/*",
     "queries/*",
-    "src/**"
+    "src/**",
+    "schema/**"
   ],
   "dependencies": {
     "node-addon-api": "^8.0.0",
@@ -49,6 +50,7 @@
   },
   "scripts": {
     "build": "tree-sitter generate --no-bindings",
+    "postbuild": "node schema/update-schema.js",
     "test": "tree-sitter test",
     "install": "node-gyp-build",
     "prebuildify": "prebuildify --napi --strip"
@@ -63,7 +65,10 @@
         "yml",
         "yaml"
       ],
-      "injection-regex": "^ya?ml$"
+      "injection-regex": "^ya?ml$",
+      "external-files": [
+        "src/schema.generated.c"
+      ]
     }
   ]
 }
