@@ -124,11 +124,11 @@ typedef enum {
     }
 
 #define SGL_PLN_SYM(POS, CTX)                                                                                          \
-    (scanner->rlt_sch == RS_NULL   ? POS##_SGL_PLN_NUL_##CTX                                                            \
-     : scanner->rlt_sch == RS_BOOL ? POS##_SGL_PLN_BOL_##CTX                                                            \
-     : scanner->rlt_sch == RS_INT ? POS##_SGL_PLN_INT_##CTX                                                            \
-     : scanner->rlt_sch == RS_FLOAT ? POS##_SGL_PLN_FLT_##CTX                                                            \
-                                  : POS##_SGL_PLN_STR_##CTX)
+    (scanner->rlt_sch == RS_NULL    ? POS##_SGL_PLN_NUL_##CTX                                                          \
+     : scanner->rlt_sch == RS_BOOL  ? POS##_SGL_PLN_BOL_##CTX                                                          \
+     : scanner->rlt_sch == RS_INT   ? POS##_SGL_PLN_INT_##CTX                                                          \
+     : scanner->rlt_sch == RS_FLOAT ? POS##_SGL_PLN_FLT_##CTX                                                          \
+                                    : POS##_SGL_PLN_STR_##CTX)
 
 typedef struct {
     int16_t row;
@@ -253,7 +253,9 @@ static inline bool is_wht(int32_t c) { return is_wsp(c) || is_nwl(c) || c == 0; 
 
 static inline bool is_ns_dec_digit(int32_t c) { return c >= '0' && c <= '9'; }
 
-static inline bool is_ns_hex_digit(int32_t c) { return is_ns_dec_digit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'); }
+static inline bool is_ns_hex_digit(int32_t c) {
+    return is_ns_dec_digit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+}
 
 static inline bool is_ns_word_char(int32_t c) {
     return c == '-' || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
@@ -799,7 +801,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     bool allow_comment = !(valid_symbols[R_DQT_STR_CTN] || valid_symbols[BR_DQT_STR_CTN] ||
                            valid_symbols[R_SQT_STR_CTN] || valid_symbols[BR_SQT_STR_CTN]);
     int16_t *ind_ptr = scanner->ind_len_stk.contents + scanner->ind_len_stk.size - 1;
-    int16_t *ind_end = scanner->ind_len_stk.contents;
+    int16_t *ind_end = scanner->ind_len_stk.contents - 1;
     int16_t cur_ind = *ind_ptr--;
     int16_t prt_ind = ind_ptr == ind_end ? -1 : *ind_ptr;
     int16_t cur_ind_typ = *array_back(&scanner->ind_typ_stk);
@@ -1364,6 +1366,8 @@ void *tree_sitter_yaml_external_scanner_create() {
 
 void tree_sitter_yaml_external_scanner_destroy(void *payload) {
     Scanner *scanner = (Scanner *)payload;
+    array_delete(&scanner->ind_len_stk);
+    array_delete(&scanner->ind_typ_stk);
     ts_free(scanner);
 }
 
