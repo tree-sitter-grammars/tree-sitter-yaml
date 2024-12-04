@@ -369,6 +369,7 @@
   {
     "type": "stream",
     "named": true,
+    "root": true,
     "fields": {},
     "children": {
       "multiple": true,
