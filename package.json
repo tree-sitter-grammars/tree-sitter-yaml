@@ -1,11 +1,9 @@
 {
   "name": "@tree-sitter-grammars/tree-sitter-yaml",
   "version": "0.6.1",
-  "license": "MIT",
   "description": "YAML grammar for tree-sitter",
-  "repository": "github:tree-sitter-grammars/tree-sitter-yaml",
-  "main": "bindings/node",
-  "types": "bindings/node",
+  "repository": "https://github.com/tree-sitter-grammars/tree-sitter-yaml",
+  "license": "MIT",
   "author": {
     "name": "Ika",
     "email": "ikatyang@gmail.com",
@@ -17,6 +15,8 @@
       "email": "amaanq12@gmail.com"
     }
   ],
+  "main": "bindings/node",
+  "types": "bindings/node",
   "keywords": [
     "incremental",
     "parsing",
@@ -25,51 +25,37 @@
   ],
   "files": [
     "grammar.js",
+    "tree-sitter.json",
     "binding.gyp",
     "prebuilds/**",
     "bindings/node/*",
     "queries/*",
     "src/**",
-    "schema/**"
+    "*.wasm"
   ],
   "dependencies": {
-    "node-addon-api": "^8.0.0",
-    "node-gyp-build": "^4.8.0"
+    "node-addon-api": "^8.3.0",
+    "node-gyp-build": "^4.8.4"
   },
   "devDependencies": {
     "prebuildify": "^6.0.1",
-    "tree-sitter-cli": "^0.22.5"
+    "tree-sitter-cli": "^0.24.4"
   },
   "peerDependencies": {
-    "tree-sitter": "^0.21.1"
+    "tree-sitter": "^0.22.1"
   },
   "peerDependenciesMeta": {
-    "tree_sitter": {
+    "tree-sitter": {
       "optional": true
     }
   },
   "scripts": {
-    "build": "tree-sitter generate --no-bindings",
-    "postbuild": "npm run --prefix schema/core build",
-    "test": "tree-sitter test",
     "install": "node-gyp-build",
-    "prebuildify": "prebuildify --napi --strip"
+    "prestart": "tree-sitter build --wasm",
+    "start": "tree-sitter playground",
+    "test": "node --test bindings/node/*_test.js"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "tree-sitter": [
-    {
-      "scope": "text.yaml",
-      "file-types": [
-        "yml",
-        "yaml"
-      ],
-      "injection-regex": "^ya?ml$",
-      "highlights": "queries/highlights.scm",
-      "external-files": [
-        "src/schema.core.c"
-      ]
-    }
-  ]
+  }
 }
