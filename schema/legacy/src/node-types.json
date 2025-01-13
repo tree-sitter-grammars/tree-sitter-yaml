@@ -23,6 +23,10 @@
         {
           "type": "null",
           "named": true
+        },
+        {
+          "type": "timestamp",
+          "named": true
         }
       ]
     }
@@ -41,6 +45,10 @@
   },
   {
     "type": "null",
+    "named": true
+  },
+  {
+    "type": "timestamp",
     "named": true
   }
 ]

@@ -328,6 +328,10 @@
         {
           "type": "string_scalar",
           "named": true
+        },
+        {
+          "type": "timestamp_scalar",
+          "named": true
         }
       ]
     }
@@ -522,6 +526,10 @@
   },
   {
     "type": "tag_prefix",
+    "named": true
+  },
+  {
+    "type": "timestamp_scalar",
     "named": true
   },
   {

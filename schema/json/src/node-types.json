@@ -2,6 +2,7 @@
   {
     "type": "scalar",
     "named": true,
+    "root": true,
     "fields": {},
     "children": {
       "multiple": false,

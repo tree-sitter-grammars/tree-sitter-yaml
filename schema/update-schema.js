@@ -41,12 +41,14 @@ readFile(join(__dirname, schema, "src", "parser.c"), "utf8").then(input => {
       .replace("return false;", '*rlt_sch = RS_STR;\n  return SCH_STT_FRZ;')
       .replace(/lookahead/g, "cur_chr"),
   ]);
+  const has_timestamp = enums.includes("RS_TIMESTAMP") ? 1 : 0;
   writeFileSync(
     join(__dirname, "..", "src", `schema.${schema}.c`),
     [
-      "#include <stdlib.h>",
       "#include <stdint.h>",
+      "#include <stdlib.h>",
       "#define SCH_STT_FRZ -1",
+      `#define HAS_TIMESTAMP ${has_timestamp}`,
       `typedef enum ${block(enums.map((k) => `${k},`))} ResultSchema;`,
       `static int8_t adv_sch_stt(int8_t sch_stt, int32_t cur_chr, ResultSchema *rlt_sch) ${block([
         content,
