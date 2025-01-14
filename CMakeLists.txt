@@ -30,9 +30,17 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/scanner.c)
 endif()
 target_include_directories(tree-sitter-yaml PRIVATE src)
 
+set(YAML_SCHEMA core CACHE STRING "YAML schema")
+set(YAML_SCHEMA_VALUES core json legacy CACHE INTERNAL "Allowed schemas")
+set_property(CACHE YAML_SCHEMA PROPERTY STRINGS ${YAML_SCHEMA_VALUES})
+if(NOT YAML_SCHEMA IN_LIST YAML_SCHEMA_VALUES)
+    message(FATAL_ERROR "YAML_SCHEMA must be one of ${YAML_SCHEMA_VALUES}")
+endif()
+
 target_compile_definitions(tree-sitter-yaml PRIVATE
                            $<$<BOOL:${TREE_SITTER_REUSE_ALLOCATOR}>:TREE_SITTER_REUSE_ALLOCATOR>
-                           $<$<CONFIG:Debug>:TREE_SITTER_DEBUG>)
+                           $<$<CONFIG:Debug>:TREE_SITTER_DEBUG>
+                           YAML_SCHEMA=${YAML_SCHEMA})
 
 set_target_properties(tree-sitter-yaml
                       PROPERTIES
