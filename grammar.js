@@ -534,11 +534,11 @@ module.exports = grammar({
 
     // plain scalar schema
 
-    _r_sgl_pln_blk: $ => choice($._r_sgl_pln_nul_blk, $._r_sgl_pln_bol_blk, $._r_sgl_pln_int_blk, $._r_sgl_pln_flt_blk, $._r_sgl_pln_str_blk),
-    _br_sgl_pln_blk: $ => choice($._br_sgl_pln_nul_blk, $._br_sgl_pln_bol_blk, $._br_sgl_pln_int_blk, $._br_sgl_pln_flt_blk, $._br_sgl_pln_str_blk),
-    _b_sgl_pln_blk: $ => choice($._b_sgl_pln_nul_blk, $._b_sgl_pln_bol_blk, $._b_sgl_pln_int_blk, $._b_sgl_pln_flt_blk, $._b_sgl_pln_str_blk),
-    _r_sgl_pln_flw: $ => choice($._r_sgl_pln_nul_flw, $._r_sgl_pln_bol_flw, $._r_sgl_pln_int_flw, $._r_sgl_pln_flt_flw, $._r_sgl_pln_str_flw),
-    _br_sgl_pln_flw: $ => choice($._br_sgl_pln_nul_flw, $._br_sgl_pln_bol_flw, $._br_sgl_pln_int_flw, $._br_sgl_pln_flt_flw, $._br_sgl_pln_str_flw),
+    _r_sgl_pln_blk: $ => scalar_types($, 'r', 'blk'),
+    _br_sgl_pln_blk: $ => scalar_types($, 'br', 'blk'),
+    _b_sgl_pln_blk: $ => scalar_types($, 'b', 'blk'),
+    _r_sgl_pln_flw: $ => scalar_types($, 'r', 'flw'),
+    _br_sgl_pln_flw: $ => scalar_types($, 'br', 'flw'),
 
     _r_mtl_pln_blk: $ => $._r_mtl_pln_str_blk,
     _br_mtl_pln_blk: $ => $._br_mtl_pln_str_blk,
@@ -613,6 +613,7 @@ module.exports.grammar = global_alias(global_alias(module.exports.grammar, {
   ..._('boolean_scalar', '_r_sgl_pln_bol_blk', '_br_sgl_pln_bol_blk', '_b_sgl_pln_bol_blk', '_r_sgl_pln_bol_flw', '_br_sgl_pln_bol_flw'),
   ..._('integer_scalar', '_r_sgl_pln_int_blk', '_br_sgl_pln_int_blk', '_b_sgl_pln_int_blk', '_r_sgl_pln_int_flw', '_br_sgl_pln_int_flw'),
   ..._('float_scalar', '_r_sgl_pln_flt_blk', '_br_sgl_pln_flt_blk', '_b_sgl_pln_flt_blk', '_r_sgl_pln_flt_flw', '_br_sgl_pln_flt_flw'),
+  ..._('timestamp_scalar', '_r_sgl_pln_tms_blk', '_br_sgl_pln_tms_blk', '_b_sgl_pln_tms_blk', '_r_sgl_pln_tms_flw', '_br_sgl_pln_tms_flw'),
   ..._('string_scalar', '_r_sgl_pln_str_blk', '_br_sgl_pln_str_blk', '_b_sgl_pln_str_blk', '_r_sgl_pln_str_flw', '_br_sgl_pln_str_flw',
     '_r_mtl_pln_str_blk', '_br_mtl_pln_str_blk', '_r_mtl_pln_str_flw', '_br_mtl_pln_str_flw'),
 }), {
@@ -713,4 +714,17 @@ function recursive_alias(rule, alias_map, checklist) {
     default:
       throw new Error(`Unexpected rule type ${JSON.stringify(rule.type)}`);
   }
+}
+
+/**
+ * @param {GrammarSymbols<string>} symbols
+ * @param {'r' | 'br' | 'b'} prefix
+ * @param {'blk' | 'flw'} suffix
+ */
+function scalar_types(symbols, prefix, suffix) {
+  const types = Array.from(
+    ['nul', 'bol', 'int', 'flt', 'tms', 'str'],
+    t => symbols[`_${prefix}_sgl_pln_${t}_${suffix}`],
+  );
+  return choice(...types);
 }
