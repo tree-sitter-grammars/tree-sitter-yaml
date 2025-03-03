@@ -13,6 +13,7 @@ autoexamples = false
 
 build = "bindings/rust/build.rs"
 include = [
+  "LICENSE",
   "bindings/rust/*",
   "grammar.js",
   "queries/*",
