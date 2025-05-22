@@ -4,14 +4,14 @@
     {
       "name": "yaml",
       "camelcase": "YAML",
+      "title": "YAML",
       "scope": "source.yaml",
       "file-types": [
         "yml",
         "yaml"
       ],
-      "highlights": [
-        "queries/highlights.scm"
-      ],
+      "highlights": "queries/highlights.scm",
+      "class-name": "TreeSitterYAML",
       "injection-regex": "^yaml$"
     }
   ],
@@ -33,13 +33,5 @@
     "links": {
       "repository": "https://github.com/tree-sitter-grammars/tree-sitter-yaml"
     }
-  },
-  "bindings": {
-    "c": true,
-    "go": true,
-    "node": true,
-    "python": true,
-    "rust": true,
-    "swift": true
   }
 }
