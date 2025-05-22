@@ -4,7 +4,7 @@ endif
 
 LANGUAGE_NAME := tree-sitter-yaml
 HOMEPAGE_URL := https://github.com/tree-sitter-grammars/tree-sitter-yaml
-VERSION := 0.7.0
+VERSION := 0.7.1
 
 # repository
 SRC_DIR := src

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-yaml
-        VERSION "0.7.0"
+        VERSION "0.7.1"
         DESCRIPTION "YAML grammar for tree-sitter"
         HOMEPAGE_URL "https://github.com/tree-sitter-grammars/tree-sitter-yaml"
         LANGUAGES C)

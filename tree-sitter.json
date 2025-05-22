@@ -16,7 +16,7 @@
     }
   ],
   "metadata": {
-    "version": "0.7.0",
+    "version": "0.7.1",
     "license": "MIT",
     "description": "YAML grammar for tree-sitter",
     "authors": [
