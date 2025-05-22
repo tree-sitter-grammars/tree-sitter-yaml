@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "tree-sitter generate",
+    "build": "tree-sitter generate --abi=14",
     "postbuild": "node ../update-schema.js json"
   }
 }

@@ -55,6 +55,7 @@ module.exports = grammar({
     $._r_sgl_pln_bol_blk,  $._br_sgl_pln_bol_blk, $._b_sgl_pln_bol_blk, $._r_sgl_pln_bol_flw,  $._br_sgl_pln_bol_flw,
     $._r_sgl_pln_int_blk,  $._br_sgl_pln_int_blk, $._b_sgl_pln_int_blk, $._r_sgl_pln_int_flw,  $._br_sgl_pln_int_flw,
     $._r_sgl_pln_flt_blk,  $._br_sgl_pln_flt_blk, $._b_sgl_pln_flt_blk, $._r_sgl_pln_flt_flw,  $._br_sgl_pln_flt_flw,
+    $._r_sgl_pln_tms_blk,  $._br_sgl_pln_tms_blk, $._b_sgl_pln_tms_blk, $._r_sgl_pln_tms_flw,  $._br_sgl_pln_tms_flw,
     $._r_sgl_pln_str_blk,  $._br_sgl_pln_str_blk, $._b_sgl_pln_str_blk, $._r_sgl_pln_str_flw,  $._br_sgl_pln_str_flw,
 
     // plain scalar (multiline in block/flow)
