@@ -3,7 +3,7 @@
 /// <reference types="tree-sitter-cli/dsl" />
 
 module.exports = grammar({
-  name: "core_schema",
+  name: "legacy_schema",
 
   extras: _ => [],
 
