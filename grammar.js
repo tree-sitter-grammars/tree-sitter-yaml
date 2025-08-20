@@ -564,7 +564,7 @@ module.exports = grammar({
   },
 });
 
-module.exports.grammar = global_alias(global_alias(module.exports.grammar, {
+module.exports = global_alias(global_alias(module.exports, {
   ..._('yaml_directive', '_s_dir_yml'),
   ..._('yaml_version', '_r_dir_yml_ver'),
   ..._('tag_directive', '_s_dir_tag'),
