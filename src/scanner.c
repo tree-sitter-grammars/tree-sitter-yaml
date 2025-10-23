@@ -144,7 +144,7 @@ typedef enum {
 #endif
 
 typedef struct {
-    int16_t row;
+    int32_t row;
     int16_t col;
     int16_t blk_imp_row;
     int16_t blk_imp_col;
@@ -153,9 +153,9 @@ typedef struct {
     Array(int16_t) ind_len_stk;
 
     // temp
-    int16_t end_row;
+    int32_t end_row;
     int16_t end_col;
-    int16_t cur_row;
+    int32_t cur_row;
     int16_t cur_col;
     int32_t cur_chr;
     int8_t sch_stt;
@@ -164,8 +164,8 @@ typedef struct {
 
 static unsigned serialize(Scanner *scanner, char *buffer) {
     size_t size = 0;
-    *(int16_t *)&buffer[size] = scanner->row;
-    size += sizeof(int16_t);
+    *(int32_t *)&buffer[size] = scanner->row;
+    size += sizeof(int32_t);
     *(int16_t *)&buffer[size] = scanner->col;
     size += sizeof(int16_t);
     *(int16_t *)&buffer[size] = scanner->blk_imp_row;
@@ -198,8 +198,8 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
     array_push(&scanner->ind_len_stk, -1);
     if (length > 0) {
         size_t size = 0;
-        scanner->row = *(int16_t *)&buffer[size];
-        size += sizeof(int16_t);
+        scanner->row = *(int32_t *)&buffer[size];
+        size += sizeof(int32_t);
         scanner->col = *(int16_t *)&buffer[size];
         size += sizeof(int16_t);
         scanner->blk_imp_row = *(int16_t *)&buffer[size];
@@ -885,7 +885,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
         return false;
     }
 
-    int16_t bgn_row = scanner->cur_row;
+    int32_t bgn_row = scanner->cur_row;
     int16_t bgn_col = scanner->cur_col;
     int32_t bgn_chr = lexer->lookahead;
 
