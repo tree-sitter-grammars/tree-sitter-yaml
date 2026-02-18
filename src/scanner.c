@@ -1084,7 +1084,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
             mrk_end(scanner, lexer);
             RET_SYM(R_DQT_STR_END)
         }
-        if (valid_symbols[BR_DQT_STR_END] && is_br) {
+        if (valid_symbols[BR_DQT_STR_END] && (is_br || has_nwl)) {
             adv(scanner, lexer);
             mrk_end(scanner, lexer);
             RET_SYM(BR_DQT_STR_END)
@@ -1119,7 +1119,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
                 RET_SYM(R_SQT_STR_END)
             }
         }
-        if (valid_symbols[BR_SQT_STR_END] && is_br) {
+        if (valid_symbols[BR_SQT_STR_END] && (is_br || has_nwl)) {
             adv(scanner, lexer);
             if (lexer->lookahead == '\'') {
                 adv(scanner, lexer);
