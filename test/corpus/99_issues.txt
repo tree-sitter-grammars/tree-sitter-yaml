@@ -20,3 +20,23 @@ c"
             (double_quote_scalar
               (escape_sequence)
               (escape_sequence))))))))
+
+==========================================
+Single-quote multiline without indent (#39)
+==========================================
+
+root: 'a
+b'
+
+---
+
+(stream
+  (document
+    (block_node
+      (block_mapping
+        (block_mapping_pair
+          key: (flow_node
+            (plain_scalar
+              (string_scalar)))
+          value: (flow_node
+            (single_quote_scalar)))))))
