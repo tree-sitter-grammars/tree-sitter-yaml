@@ -67,9 +67,11 @@ typedef enum {
 
 // clang-format on
 
-#define SCN_SUCC 1
-#define SCN_STOP 0
-#define SCN_FAIL (-1)
+typedef enum {
+    SCN_FAIL = -1,
+    SCN_STOP,
+    SCN_SUCC,
+} ScanStatus;
 
 #define IND_ROT 'r'
 #define IND_MAP 'm'
@@ -326,7 +328,7 @@ static inline bool is_ns_tag_char(int32_t c) {
 
 static inline bool is_ns_anchor_char(int32_t c) { return is_ns_char(c) && !is_c_flow_indicator(c); }
 
-static char scn_uri_esc(Scanner *scanner, TSLexer *lexer) {
+static ScanStatus scn_uri_esc(Scanner *scanner, TSLexer *lexer) {
     if (lexer->lookahead != '%') {
         return SCN_STOP;
     }
@@ -343,7 +345,7 @@ static char scn_uri_esc(Scanner *scanner, TSLexer *lexer) {
     return SCN_SUCC;
 }
 
-static char scn_ns_uri_char(Scanner *scanner, TSLexer *lexer) {
+static ScanStatus scn_ns_uri_char(Scanner *scanner, TSLexer *lexer) {
     if (is_ns_uri_char(lexer->lookahead)) {
         adv(scanner, lexer);
         return SCN_SUCC;
@@ -351,7 +353,7 @@ static char scn_ns_uri_char(Scanner *scanner, TSLexer *lexer) {
     return scn_uri_esc(scanner, lexer);
 }
 
-static char scn_ns_tag_char(Scanner *scanner, TSLexer *lexer) {
+static ScanStatus scn_ns_tag_char(Scanner *scanner, TSLexer *lexer) {
     if (is_ns_tag_char(lexer->lookahead)) {
         adv(scanner, lexer);
         return SCN_SUCC;
@@ -778,7 +780,7 @@ static bool scn_blk_str_cnt(Scanner *scanner, TSLexer *lexer, TSSymbol result_sy
     RET_SYM(result_symbol);
 }
 
-static char scn_pln_cnt(Scanner *scanner, TSLexer *lexer, bool (*is_plain_safe)(int32_t)) {
+static ScanStatus scn_pln_cnt(Scanner *scanner, TSLexer *lexer, bool (*is_plain_safe)(int32_t)) {
     bool is_cur_wsp = is_wsp(scanner->cur_chr);
     bool is_cur_saf = is_plain_safe(scanner->cur_chr);
     bool is_lka_wsp = is_wsp(lexer->lookahead);
