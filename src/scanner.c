@@ -146,7 +146,7 @@ typedef enum {
 typedef struct {
     int32_t row;
     int16_t col;
-    int16_t blk_imp_row;
+    int32_t blk_imp_row;
     int16_t blk_imp_col;
     int16_t blk_imp_tab;
     Array(int16_t) ind_typ_stk;
@@ -168,8 +168,8 @@ static unsigned serialize(Scanner *scanner, char *buffer) {
     size += sizeof(int32_t);
     *(int16_t *)&buffer[size] = scanner->col;
     size += sizeof(int16_t);
-    *(int16_t *)&buffer[size] = scanner->blk_imp_row;
-    size += sizeof(int16_t);
+    *(int32_t *)&buffer[size] = scanner->blk_imp_row;
+    size += sizeof(int32_t);
     *(int16_t *)&buffer[size] = scanner->blk_imp_col;
     size += sizeof(int16_t);
     *(int16_t *)&buffer[size] = scanner->blk_imp_tab;
@@ -202,8 +202,8 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
         size += sizeof(int32_t);
         scanner->col = *(int16_t *)&buffer[size];
         size += sizeof(int16_t);
-        scanner->blk_imp_row = *(int16_t *)&buffer[size];
-        size += sizeof(int16_t);
+        scanner->blk_imp_row = *(int32_t *)&buffer[size];
+        size += sizeof(int32_t);
         scanner->blk_imp_col = *(int16_t *)&buffer[size];
         size += sizeof(int16_t);
         scanner->blk_imp_tab = *(int16_t *)&buffer[size];
