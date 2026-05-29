@@ -927,7 +927,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     }
 
     if ((valid_symbols[R_SQT_STR_CTN] && is_r && scn_sqt_str_cnt(scanner, lexer, R_SQT_STR_CTN)) ||
-        (valid_symbols[BR_SQT_STR_CTN] && is_br && scn_sqt_str_cnt(scanner, lexer, BR_SQT_STR_CTN))) {
+        (valid_symbols[BR_SQT_STR_CTN] && (is_br || has_nwl) && scn_sqt_str_cnt(scanner, lexer, BR_SQT_STR_CTN))) {
         return true;
     }
 
@@ -1086,7 +1086,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
             mrk_end(scanner, lexer);
             RET_SYM(R_DQT_STR_END)
         }
-        if (valid_symbols[BR_DQT_STR_END] && is_br) {
+        if (valid_symbols[BR_DQT_STR_END] && (is_br || has_nwl)) {
             adv(scanner, lexer);
             mrk_end(scanner, lexer);
             RET_SYM(BR_DQT_STR_END)
@@ -1121,7 +1121,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
                 RET_SYM(R_SQT_STR_END)
             }
         }
-        if (valid_symbols[BR_SQT_STR_END] && is_br) {
+        if (valid_symbols[BR_SQT_STR_END] && (is_br || has_nwl)) {
             adv(scanner, lexer);
             if (lexer->lookahead == '\'') {
                 adv(scanner, lexer);
